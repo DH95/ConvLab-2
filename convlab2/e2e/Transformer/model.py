@@ -56,7 +56,7 @@ class Transformer(Agent):
                            'train': ['leaveat', 'destination', 'day', 'arriveby', 'departure'],
                            'taxi': ['leaveat', 'destination', 'departure', 'arriveby'],
                            'police': []}
-        dia_act = open('./data/multiwoz/dialog_act_slot.txt', 'r')
+        dia_act = open('ConvLab-2/data/multiwoz/dialog_act_slot.txt', 'r')
         f = dia_act.read().split('\n')
         self.dia_act_dict = {}
         key = ""
