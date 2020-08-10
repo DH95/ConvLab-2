@@ -37,7 +37,7 @@ setup(
         'visdom',
         'Pillow',
         'future',
-        'torch',
+        'torch==1.1.0',
         'numpy>=1.15.0',
         'scipy',
         'scikit-learn==0.20.3',
@@ -54,7 +54,10 @@ setup(
         'jieba',
         'embeddings',
         'quadprog',
-        'pyyaml'
+        'pyyaml',
+        'googledrivedownloader==0.4',
+        'pytorch-ignite==0.2.0',
+
     ],
     extras_require={
         'develop': [
