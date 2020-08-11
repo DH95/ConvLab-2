@@ -91,9 +91,18 @@ class PipelineAgent(Agent):
         self.init_session()
         self.history = []
 
-    def response(self, observation):
+        self.print_nlu = False
+        self.print_dst = False
+        self.print_pol = False
+
+    def response(self, observation, print_nlu=False, print_dst=False, print_pol=False):
         """Generate agent response using the agent modules."""
         # Note: If you modify the logic of this function, please ensure that it is consistent with deploy.server.ServerCtrl._turn()
+
+        self.print_nlu = print_nlu
+        self.print_dst = print_dst
+        self.print_pol = print_pol
+
         if self.dst is not None:
             self.dst.state['history'].append([self.opponent_name, observation]) # [['sys', sys_utt], ['user', user_utt],...]
         self.history.append([self.opponent_name, observation])
@@ -103,6 +112,9 @@ class PipelineAgent(Agent):
         else:
             self.input_action = observation
         self.input_action = deepcopy(self.input_action) # get rid of reference problem
+        if self.print_nlu:
+            print("nlu predict")
+            pprint(self.input_action)
         # get state
         if self.dst is not None:
             if self.name is 'sys':
@@ -113,14 +125,21 @@ class PipelineAgent(Agent):
         else:
             state = self.input_action
         state = deepcopy(state) # get rid of reference problem
+        if self.print_dst:
+            print("dialogue state predict")
+            pprint({'dialogue state': state['belief_state'], 'history': state['history']})
         # get action
         self.output_action = deepcopy(self.policy.predict(state)) # get rid of reference problem
+        if self.print_pol:
+            print("dialogue act predict")
+            pprint(self.output_action)
+
         # get model response
         if self.nlg is not None:
             model_response = self.nlg.generate(self.output_action)
         else:
             model_response = self.output_action
-        # print(model_response)
+        # print("model response {}".format(model_response))
         if self.dst is not None:
             self.dst.state['history'].append([self.name, model_response])
             if self.name is 'sys':
